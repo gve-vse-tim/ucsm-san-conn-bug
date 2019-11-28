@@ -1,0 +1,96 @@
+---
+# file: ucspe-local.yaml
+
+# Needs to match the hosts.yaml file
+this_ucs_hostname: "{{ ansible_host }}"
+this_ucs_username: "{{ ansible_user }}"
+this_ucs_password: "{{ ansible_pass }}"
+this_ucs_org_root: root
+this_ucs_org_name: demo
+this_ucs_org: org-root/org-demo
+
+demo_vsans:
+  - name: demoVSAN-A
+    vlan_id: 3101
+    vsan_id: 101
+    fabric: A
+    fc_zoning: disabled
+    state: present
+  - name: demoVSAN-B
+    vlan_id: 3201
+    vsan_id: 201
+    fabric: B
+    fc_zoning: disabled
+    state: present
+
+demo_wwn_pools:
+  - name: "demoWWNN"
+    purpose: "node"
+    first: "20:00:00:25:B5:C0:00:01"
+    last: "20:00:00:25:B5:C0:00:FF"
+    state: present
+  - name: "demoBootWWPN-A"
+    purpose: "port"
+    first: "20:00:00:25:B5:A0:00:01"
+    last: "20:00:00:25:B5:A0:00:FF"
+    state: present
+  - name: "demoBootWWPN-B"
+    purpose: "port"
+    first: "20:00:00:25:B5:B0:00:01"
+    last: "20:00:00:25:B5:B0:00:FF"
+    state: present
+  - name: "demoDataWWPN-A"
+    purpose: "port"
+    first: "20:00:00:25:B5:A1:00:01"
+    last: "20:00:00:25:B5:A1:00:FF"
+    state: present
+  - name: "demoDataWWPN-B"
+    purpose: "port"
+    first: "20:00:00:25:B5:B1:00:01"
+    last: "20:00:00:25:B5:B1:00:FF"
+    state: present
+
+demo_vhbas:
+  - name: vhba-boot-A
+    description: vhba-boot-A
+    fabric: "A"
+    wwpn_pool: "demoBootWWPN-A"
+    vsan: "demoVSAN-A"
+    max_data: 2048
+    template_type: "updating-template"
+    state: present
+  - name: vhba-boot-B
+    description: vhba-boot-B
+    fabric: "B"
+    wwpn_pool: "demoBootWWPN-B"
+    vsan: "demoVSAN-B"
+    max_data: 2048
+    template_type: "updating-template"
+    state: present
+  - name: vhba-data-A
+    description: vhba-data-A
+    fabric: "A"
+    wwpn_pool: "demoDataWWPN-A"
+    vsan: "demoVSAN-A"
+    max_data: 2048
+    template_type: "updating-template"
+    state: present
+  - name: vhba-data-B
+    description: vhba-data-B
+    fabric: "B"
+    wwpn_pool: "demoDataWWPN-B"
+    vsan: "demoVSAN-B"
+    max_data: 2048
+    template_type: "updating-template"
+    state: present
+
+san_conn_policy:
+  name: "Demo-VMware-SAN"
+  descr: "Boot from SAN and Separate Data vHBAs"
+  wwnn_pool: "demoWWNN"
+
+demo_san_conn:
+  - { order: "1", name: "bootA", template: "vhba-boot-A", policy: "VMWare" }
+  - { order: "2", name: "bootB", template: "vhba-boot-B", policy: "VMWare" }
+  - { order: "3", name: "dataA", template: "vhba-data-A", policy: "VMWare" }
+  - { order: "4", name: "dataB", template: "vhba-data-B", policy: "VMWare" }

@@ -1,0 +1,32 @@
+
+PLAY [ucspe] *******************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [ucspe-local]
+
+TASK [admin : Create Demo Sub Organization] ************************************
+changed: [ucspe-local]
+
+TASK [san : Create VMM VSANs (A/B)] ********************************************
+changed: [ucspe-local] => (item={'name': 'demoVSAN-A', 'vlan_id': 3101, 'vsan_id': 101, 'fabric': 'A', 'fc_zoning': 'disabled', 'state': 'present'})
+changed: [ucspe-local] => (item={'name': 'demoVSAN-B', 'vlan_id': 3201, 'vsan_id': 201, 'fabric': 'B', 'fc_zoning': 'disabled', 'state': 'present'})
+
+TASK [san : Create WWN Pools] **************************************************
+changed: [ucspe-local] => (item={'name': 'demoWWNN', 'purpose': 'node', 'first': '20:00:00:25:B5:C0:00:01', 'last': '20:00:00:25:B5:C0:00:FF', 'state': 'present'})
+changed: [ucspe-local] => (item={'name': 'demoBootWWPN-A', 'purpose': 'port', 'first': '20:00:00:25:B5:A0:00:01', 'last': '20:00:00:25:B5:A0:00:FF', 'state': 'present'})
+changed: [ucspe-local] => (item={'name': 'demoBootWWPN-B', 'purpose': 'port', 'first': '20:00:00:25:B5:B0:00:01', 'last': '20:00:00:25:B5:B0:00:FF', 'state': 'present'})
+changed: [ucspe-local] => (item={'name': 'demoDataWWPN-A', 'purpose': 'port', 'first': '20:00:00:25:B5:A1:00:01', 'last': '20:00:00:25:B5:A1:00:FF', 'state': 'present'})
+changed: [ucspe-local] => (item={'name': 'demoDataWWPN-B', 'purpose': 'port', 'first': '20:00:00:25:B5:B1:00:01', 'last': '20:00:00:25:B5:B1:00:FF', 'state': 'present'})
+
+TASK [san : Create vHBA Templates] *********************************************
+changed: [ucspe-local] => (item={'name': 'vhba-boot-A', 'description': 'vhba-boot-A', 'fabric': 'A', 'wwpn_pool': 'demoBootWWPN-A', 'vsan': 'demoVSAN-A', 'max_data': 2048, 'template_type': 'updating-template', 'state': 'present'})
+changed: [ucspe-local] => (item={'name': 'vhba-boot-B', 'description': 'vhba-boot-B', 'fabric': 'B', 'wwpn_pool': 'demoBootWWPN-B', 'vsan': 'demoVSAN-B', 'max_data': 2048, 'template_type': 'updating-template', 'state': 'present'})
+changed: [ucspe-local] => (item={'name': 'vhba-data-A', 'description': 'vhba-data-A', 'fabric': 'A', 'wwpn_pool': 'demoDataWWPN-A', 'vsan': 'demoVSAN-A', 'max_data': 2048, 'template_type': 'updating-template', 'state': 'present'})
+changed: [ucspe-local] => (item={'name': 'vhba-data-B', 'description': 'vhba-data-B', 'fabric': 'B', 'wwpn_pool': 'demoDataWWPN-B', 'vsan': 'demoVSAN-B', 'max_data': 2048, 'template_type': 'updating-template', 'state': 'present'})
+
+TASK [Create SAN Connectivity Policies] ****************************************
+changed: [ucspe-local]
+
+PLAY RECAP *********************************************************************
+ucspe-local                : ok=6    changed=5    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
